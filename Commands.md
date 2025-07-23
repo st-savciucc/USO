@@ -57,3 +57,17 @@ sudo useradd -m -p $(openssl passwd -1 password) username
      ```bash
      sudo passwd -S username
      ```
+
+## 3. Taking a Screenshot to Clipboard
+
+**Command:**
+
+```bash
+gnome-screenshot -a -f /tmp/ss.png && xclip -selection clipboard -t image/png -i /tmp/ss.png
+```
+
+* **`-a`**: Allows selecting a region with the mouse.
+* **`-f /tmp/ss.png`**: Specifies the output file path.
+* **`xclip -selection clipboard -t image/png -i /tmp/ss.png`**: Copies the saved image into the system clipboard.
+
+After running this command, you can paste (Ctrl+V) the screenshot directly into any application that supports image pasting.
