@@ -2,20 +2,32 @@
 
 ## 1. Creating a Symbolic Link
 
-**Command:**
+### Hard Link (brief)
+
+**What**: Another filename pointing to the same inode/data.  
+**Pros**: Survives original deletion, super fast.  
+**Limits**: Files only (no dirs), same filesystem/partition.
 
 ```bash
-ln -s /path/to/source /path/to/destination
+# create
+ln path/to/source.txt path/to/hardlink.txt
+
+# verify (same inode = same number in 1st column)
+ls -li path/to/source.txt path/to/hardlink.txt
 ```
 
-* **`/path/to/source`**: The original file or directory you want to link to.
-* **`/path/to/destination`**: The name and location of the symbolic link that will be created.
+---
 
-When you run this command, `destination` will point to `source`. If you list `destination`, you'll see something like:
+### Creating a Symbolic Link
 
+**What**: A small file that stores the path to the target (like a shortcut).  
+**Pros**: Can link to dirs, across filesystems.  
+**Cons**: Breaks if the path changes (becomes “dangling”).
+
+### Basic syntax
 ```bash
-$ ls -l destination
-destination -> /path/to/source
+# file -> symlink
+ln -s path/to/target path/to/link
 ```
 
 ## 2. Creating a New User
