@@ -30,6 +30,14 @@ ls -li path/to/source.txt path/to/hardlink.txt
 ln -s path/to/target path/to/link
 ```
 
+### Veriy
+````bash
+ls -l nume_link
+# afișează: link -> /cale/catre/target
+``` ✅
+````
+
+
 ## 2. Creating a New User
 
 **Command:**
