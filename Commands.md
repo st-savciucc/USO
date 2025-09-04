@@ -34,7 +34,6 @@ ln -s path/to/target path/to/link
 ````bash
 ls -l nume_link
 # afișează: link -> /cale/catre/target
-``` ✅
 ````
 
 
@@ -78,16 +77,61 @@ sudo useradd -m -p $(openssl passwd -1 password) username
      sudo passwd -S username
      ```
 
-## 3. Taking a Screenshot to Clipboard
+## 📌 Process Fields & Options in `ps`
 
-**Command:**
+### 🔹 Process Fields
+
+* **PID** – Process ID.
+* **PPID** – Parent Process ID.
+* **CMD** – Executed command (may be truncated).
+* **ARGS / COMMAND** – Full command with arguments.
+* **COMM** – Only the executable name.
+* **USER** – Effective user name.
+* **UID** – Effective user ID (numeric).
+* **RUSER / RUID** – Real user name / ID.
+* **EUSER / EUID** – Effective user name / ID.
+* **GID / EGID** – (Effective) group ID.
+* **RGROUP / RGID** – Real group (name / ID).
+* **TTY** – Associated terminal (e.g. pts/0), or `?` if none.
+* **STAT** – Process state (R, S, D, T, Z + flags).
+* **PRI** – Priority.
+* **NI** – Niceness value (−20…19).
+* **%CPU / PCPU** – CPU usage percentage.
+* **%MEM / PMEM** – Memory usage percentage.
+* **VSZ** – Virtual memory size (KB).
+* **RSS** – Resident Set Size (RAM usage, KB).
+* **ETIME** – Elapsed running time (HH\:MM\:SS).
+* **TIME / CPUTIME** – Total consumed CPU time.
+* **START / LSTART** – Start time (short / full).
+* **NLWP** – Number of threads (lightweight processes).
+* **SID** – Session ID.
+* **PGID** – Process Group ID.
+* **WCHAN** – Kernel function where process sleeps.
+
+---
+
+### 🔹 Examples
 
 ```bash
-gnome-screenshot -a -f /tmp/ss.png && xclip -selection clipboard -t image/png -i /tmp/ss.png
+# Processes of user "student", showing PID, PPID, full args, state, %CPU and %MEM
+ps -u student -o pid,ppid,args,stat,%cpu,%mem --sort=ppid
+
+# Show PID, elapsed time, memory usage, and command for a given PID
+ps -o pid,etime,vsz,rss,cmd -p <PID>
+
+# Show PID, long start time, and command
+ps -o pid,lstart,cmd -p <PID>
 ```
 
-* **`-a`**: Allows selecting a region with the mouse.
-* **`-f /tmp/ss.png`**: Specifies the output file path.
-* **`xclip -selection clipboard -t image/png -i /tmp/ss.png`**: Copies the saved image into the system clipboard.
+---
 
-After running this command, you can paste (Ctrl+V) the screenshot directly into any application that supports image pasting.
+### 🔹 Common Options (briefly)
+
+* **`-e`** → Show *all processes* (same as `-A`).
+* **`-o`** → Customize *output format* (choose columns).
+* **`-u`** → Show processes for a *specific user*.
+* **`-f`** → Full-format listing (includes PPID, UID, time, etc).
+
+---
+
+
