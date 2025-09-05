@@ -1,5 +1,71 @@
 # Useful Linux Commands
 
+# 🔑 `ls` — Essential Options (Summary)
+
+* **Basic listing**
+
+  ```bash
+  ls
+  ls -1
+  ```
+
+  → show files; with `-1`, one entry per line.
+
+* **Long / detailed listing**
+
+  ```bash
+  ls -l
+  ls -lh
+  ```
+
+  → `-l` shows permissions, owner, group, size, timestamp;
+  → `-h` makes sizes human-readable (KB, MB, GB).
+
+* **Hidden files**
+
+  ```bash
+  ls -a   # include . and ..
+  ls -A   # include hidden files, exclude . and ..
+  ```
+
+* **Show directory itself, not its contents**
+
+  ```bash
+  ls -ld /etc
+  ```
+
+* **Sorting options**
+
+  ```bash
+  ls -lt   # by modification time (newest first)
+  ls -lS   # by file size (largest first)
+  ls -lX   # by extension
+  ls -lr   # reverse order
+  ```
+
+* **Visual classification**
+
+  ```bash
+  ls -F   # add / to dirs, * to executables, @ to symlinks
+  ls -p   # add / only to directories
+  ```
+
+* **Recursive listing**
+
+  ```bash
+  ls -R
+  ```
+
+* **Extra info**
+
+  ```bash
+  ls -li   # show inode numbers
+  ls -ln   # show numeric UID/GID
+  ```
+
+---
+
+
 ## 1. Creating a Symbolic Link
 
 ### Hard Link (brief)
