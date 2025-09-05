@@ -468,3 +468,194 @@ id ana
 * `chage -M days user` → enforce password expiration policy
 
 ---
+
+# 🔑 Archiving & Compression in Ubuntu (tar, zip, gzip, bzip2, xz)
+
+Archiving and compression are used to package files and reduce their size. The most common tools in Linux are `tar`, `zip`, and `gzip` (plus `bzip2` and `xz` for stronger compression).
+
+---
+
+## 1. Create a `.tar` archive (without compression)
+
+```bash
+tar -cf backup.tar Documents/
+```
+
+* `tar` → archive utility
+* `-c` → create archive
+* `-f backup.tar` → filename of archive (`backup.tar`)
+* `Documents/` → folder to include
+
+---
+
+## 2. Extract a `.tar` archive
+
+```bash
+tar -xf backup.tar
+```
+
+* `-x` → extract files
+* `-f` → file to extract (`backup.tar`)
+
+---
+
+## 3. Create a compressed `.tar.gz` archive
+
+```bash
+tar -czf project.tar.gz project/
+```
+
+* `-c` → create archive
+* `-z` → compress with gzip
+* `-f project.tar.gz` → output archive file
+* `project/` → source folder
+
+---
+
+## 4. Extract a `.tar.gz` archive
+
+```bash
+tar -xzf project.tar.gz
+```
+
+* `-x` → extract
+* `-z` → use gzip decompression
+* `-f project.tar.gz` → file to extract
+
+---
+
+## 5. Create a `.tar.bz2` archive (bzip2 compression)
+
+```bash
+tar -cjf archive.tar.bz2 folder/
+```
+
+* `-j` → compress with bzip2 (better compression, slower)
+
+---
+
+## 6. Create a `.tar.xz` archive (xz compression)
+
+```bash
+tar -cJf archive.tar.xz folder/
+```
+
+* `-J` → compress with xz (strong compression, slower than gzip)
+
+---
+
+## 7. List contents of a tar archive
+
+```bash
+tar -tf project.tar.gz
+```
+
+* `-t` → list contents
+* `-f` → file to check
+
+---
+
+## 8. Create a `.zip` archive
+
+```bash
+zip -r files.zip project/
+```
+
+* `zip` → create zip archive
+* `-r` → recursive (include subdirectories)
+* `files.zip` → archive name
+* `project/` → folder to archive
+
+---
+
+## 9. Extract a `.zip` archive
+
+```bash
+unzip files.zip
+```
+
+* `unzip` → extract zip archive
+
+---
+
+## 10. Create a password-protected `.zip`
+
+```bash
+zip -r -P Secret123 secure.zip project/
+```
+
+* `-P Secret123` → set password = `Secret123`
+  ⚠️ Not very secure (password visible in history) → prefer `zipcloak` or `gpg`
+
+---
+
+## 11. Compress a single file with `gzip`
+
+```bash
+gzip file.txt
+```
+
+* Compresses `file.txt` → creates `file.txt.gz` and removes the original
+
+**Decompress back:**
+
+```bash
+gunzip file.txt.gz
+```
+
+* Restores the original file
+
+---
+
+## 12. Keep original file when compressing
+
+```bash
+gzip -c file.txt > file.txt.gz
+```
+
+* `-c` → write output to stdout (redirect to file)
+* Leaves the original file untouched
+
+---
+
+## 13. Stronger compression with `bzip2`
+
+```bash
+bzip2 file.txt
+bunzip2 file.txt.bz2
+```
+
+* `bzip2` → compresses into `.bz2`
+* `bunzip2` → decompress
+
+---
+
+## 14. Stronger compression with `xz`
+
+```bash
+xz file.txt
+unxz file.txt.xz
+```
+
+* `xz` → compresses into `.xz`
+* `unxz` → decompress
+
+---
+
+## 15. Check compression ratios
+
+```bash
+ls -lh file.txt file.txt.gz file.txt.bz2 file.txt.xz
+```
+
+* `ls -lh` → compare file sizes easily
+
+---
+
+👉 **In summary:**
+
+* `tar` → bundles multiple files into one archive (can combine with gzip/bzip2/xz for compression)
+* `zip` / `unzip` → widely used, supports password (less secure)
+* `gzip` / `bzip2` / `xz` → compress single files with different strength/speed trade-offs
+
+---
