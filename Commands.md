@@ -1,5 +1,28 @@
 # Useful Linux Commands
 
+---
+
+
+# 📑 Cuprins
+
+- [Navigarea în sistemul de fișiere & linkuri (mkdir, touch, ln, ln -s)](#creating-a-symbolic-link)
+- [Crearea unui utilizator nou](#2-creating-a-new-user)
+- [Procese și monitorizare (ps, top, kill)](#-process-fields--options-in-ps)
+- [Lucrul cu dd, /dev/zero, /dev/urandom](#-working-with-dd-devzero-and-devurandom)
+- [Utilizatori, grupuri & permisiuni](#-working-with-users-groups--permissions-in-ubuntu)
+- [Arhivare & compresie (tar, zip, gzip, bzip2, xz)](#-archiving--compression-in-ubuntu-tar-zip-gzip-bzip2-xz)
+- [Rețelistică de bază (ip, ping, curl, ip route)](#-networking-basics-in-ubuntu-ip-ping-curl-ip-route)
+- [Servicii (systemd)](#-services-systemd--7-useful-examples)
+- [Pachete (APT/Dpkg)](#-packages-aptdpkg--7-useful-examples)
+- [Comenzi de lucru cu fișiere (sort, seq, cat, uniq)](#-sort--sortarea-textului)
+- [awk – procesarea textului](#-awk--rezumat-complex)
+- [grep – căutare text](#-grep--rezumat-complex)
+- [Git Essentials (init, add, commit, reset, branch)](#-git-essentials--init-add-commit-reset-branch)
+
+
+---
+
+
 # 🔑 `ls` — Essential Options (Summary)
 
 * **Basic listing**
@@ -1707,5 +1730,503 @@ dpkg -l | grep python3
 ```bash
 dpkg -L curl
 ```
+
+---
+
+# 🔹 `sort` – Sortarea textului
+
+**Sortare alfabetică (A → Z)**
+
+```bash
+sort file.txt
+```
+
+**Sortare inversă (Z → A)**
+
+```bash
+sort -r file.txt
+```
+
+**Sortare numerică**
+
+```bash
+sort -n numbers.txt
+```
+
+**Sortare numerică descrescătoare**
+
+```bash
+sort -nr numbers.txt
+```
+
+**Sortare după coloană**
+
+```bash
+sort -k2 file.txt          # după coloana a 2-a
+sort -k3,3 file.txt        # strict după coloana a 3-a
+sort -t$'\t' -k2 music.txt # după col 2 când delimitatorul e TAB
+```
+
+👉 **Rezumat**:
+
+* alfabetic: `sort`
+* invers: `sort -r`
+* numeric: `sort -n`
+* numeric invers: `sort -nr`
+* după coloană: `sort -kN` (cu `-t` dacă delimitator ≠ spațiu).
+
+---
+
+# 🔹 `seq` – Generarea secvențelor de numere
+
+**Teorie**
+`seq` afișează o listă de numere.
+Format:
+
+```bash
+seq [START] [STEP] END
+```
+
+**Exemple**
+
+```bash
+seq 5           # 1 2 3 4 5
+seq 2 6         # 2 3 4 5 6
+seq 10 2 20     # 10 12 14 16 18 20
+seq -3 3        # -3 -2 -1 0 1 2 3
+seq -w 07 12    # 07 08 09 10 11 12
+seq -s, 1 5     # 1,2,3,4,5
+seq -f "Num=%02g" 1 3
+```
+
+---
+
+# 🔹 `cat` – Afișare și concatenare fișiere
+
+**Teorie**
+`cat` afișează conținutul fișierelor sau le lipește.
+
+**Exemple**
+
+```bash
+cat file.txt
+cat file1.txt file2.txt > all.txt
+cat -n file.txt   # numerotează toate liniile
+cat -b file.txt   # numerotează doar liniile cu text
+cat -s file.txt   # elimină liniile goale consecutive
+cat -E file.txt   # marchează sfârșitul liniei cu $
+```
+
+---
+
+# 🔹 `uniq` – Eliminarea liniilor duplicate
+
+**Teorie**
+`uniq` elimină duplicatele **consecutive** (de obicei folosit cu `sort`).
+
+**Exemple**
+Fișier `names.txt`:
+
+```
+ana
+ana
+bogdan
+ion
+ion
+ion
+maria
+```
+
+```bash
+uniq names.txt        # elimină duplicatele consecutive
+sort names.txt | uniq # elimină toate duplicatele (sortare + uniq)
+uniq -c names.txt     # arată și numărul de apariții
+uniq -d names.txt     # doar liniile duplicate
+uniq -u names.txt     # doar liniile unice
+uniq -i names.txt     # ignoră litere mari/mici
+```
+
+---
+
+**Combinare cu alte comenzi**
+
+```bash
+ps -ef | grep firefox   # procese cu „firefox”
+ls -l | grep ".txt"     # doar fișiere .txt
+```
+
+---
+
+# 🔹 Rezumat pentru examen
+
+* **`sort`** → sortare (alfabetică, numerică, invers, pe coloane)
+* **`seq`** → generează liste de numere (intervale, pași, formate)
+* **`cat`** → afișează/unește fișiere, numerotare linii, elimină spații
+* **`uniq`** → elimină duplicate, afișează contorizare, doar unice/duplicate
+
+---
+
+# 🔹 `awk` – Rezumat complex
+
+## 1. Teorie
+
+* **Ce este `awk`?**
+  `awk` este un limbaj de procesare a textului.
+  Funcționează astfel: citește fișiere **linie cu linie**, împarte fiecare linie în **câmpuri (fields)** (implicit separate prin spații/tab) și aplică instrucțiuni.
+
+* **Structura generală**
+
+  ```bash
+  awk 'pattern { action }' fisier
+  ```
+
+  * **pattern** = condiția (ex: `$3 == "Hip hop"`)
+  * **action** = ce să facă (ex: `print $1`)
+  * Dacă lipsește `pattern`, se aplică pentru toate liniile.
+  * Dacă lipsește `action`, implicit este `print $0` (afișează linia întreagă).
+
+---
+
+## 2. Variabile built-in importante
+
+* `$1, $2, …` → câmpurile (coloanele)
+* `$0` → întreaga linie
+* `NF` → numărul de câmpuri din linie
+* `NR` → numărul liniei curente
+* `FNR` → numărul liniei curente din fișier (diferit dacă procesezi mai multe fișiere)
+* `FS` → field separator (delimitator la input, implicit spațiu/tab)
+* `OFS` → output field separator (implicit spațiu)
+* `RS` → record separator (delimitator de linii, implicit newline)
+* `ORS` → output record separator (implicit newline)
+
+---
+
+## 3. Opțiuni și argumente importante
+
+* `-F` → setează delimitatorul câmpurilor.
+
+  ```bash
+  awk -F: '{print $1}' /etc/passwd
+  ```
+* `-v` → definește variabile din linia de comandă.
+
+  ```bash
+  awk -v limit=100 '$3 > limit {print $1, $3}' file.txt
+  ```
+* `BEGIN {}` → cod rulat înainte de a citi fișierul.
+* `END {}` → cod rulat după ce fișierul a fost procesat.
+
+---
+
+## 4. Exemple practice (20)
+
+### 1. Prima coloană din fișier
+
+```bash
+awk '{print $1}' music.txt
+```
+
+### 2. Mai multe coloane
+
+```bash
+awk '{print $1, "-", $2}' music.txt
+```
+
+### 3. Numerotarea liniilor
+
+```bash
+awk '{print NR, $0}' music.txt
+```
+
+### 4. Ultima coloană
+
+```bash
+awk '{print $NF}' music.txt
+```
+
+### 5. Număr total de linii
+
+```bash
+awk 'END {print "Total linii:", NR}' music.txt
+```
+
+### 6. Număr total de câmpuri din fișier
+
+```bash
+awk '{c += NF} END {print "Total câmpuri:", c}' music.txt
+```
+
+### 7. Linii cu mai mult de 3 câmpuri
+
+```bash
+awk 'NF > 3' music.txt
+```
+
+### 8. Linii care conțin un anumit text
+
+```bash
+awk '/Hip hop/ {print $1, $2}' music.txt
+```
+
+### 9. Filtrare pe bază de condiție numerică
+
+```bash
+awk '$3 == "Hip hop" {print $1, $2}' music.txt
+```
+
+### 10. Schimbare delimitator output
+
+```bash
+awk -F"\t" 'BEGIN {OFS=" | "} {print $1, $2, $3}' music.txt
+```
+
+### 11. Contorizare linii care îndeplinesc condiții
+
+```bash
+awk '$3=="Hip hop" {c++} END {print "Albume hip hop:", c}' music.txt
+```
+
+### 12. Suma valorilor dintr-o coloană
+
+Fișier `numere.txt`:
+
+```bash
+awk '{s+=$1} END {print "Suma =", s}' numere.txt
+```
+
+### 13. Media aritmetică
+
+```bash
+awk '{s+=$1; c++} END {print "Media =", s/c}' numere.txt
+```
+
+### 14. Minim și maxim
+
+```bash
+awk 'NR==1 {min=max=$1} $1<min {min=$1} $1>max {max=$1} END {print "Min=",min,"Max=",max}' numere.txt
+```
+
+### 15. Print doar anumite linii (ex. primele 5)
+
+```bash
+awk 'NR <= 5 {print}' music.txt
+```
+
+### 16. Print linii pare
+
+```bash
+awk 'NR % 2 == 0' music.txt
+```
+
+### 17. Print linii impare
+
+```bash
+awk 'NR % 2 == 1' music.txt
+```
+
+### 18. Arată linia și câte câmpuri are
+
+```bash
+awk '{print "Linia:", NR, "are", NF, "câmpuri"}' music.txt
+```
+
+### 19. Formatare tabel
+
+```bash
+awk '{printf "%-15s %-20s\n", $1, $2}' music.txt
+```
+
+### 20. Înlocuiri simple (simulare „replace”)
+
+```bash
+awk '{gsub("Hip hop", "Rap"); print}' music.txt
+```
+
+---
+
+## 5. Rezumat
+
+* **Coloane:** `$1, $2, $NF`
+* **Linie completă:** `$0`
+* **Număr linie:** `NR`
+* **Număr câmpuri:** `NF`
+* **Separatoare:** `-F`, `FS`, `OFS`
+* **Condiții:** `$3=="Hip hop"`, `NR>5`, `NF<4`
+* **Blocuri speciale:** `BEGIN {}`, `END {}`
+
+👉 `awk` = cel mai puternic utilitar de lucru pe fișiere text structurate.
+
+---
+
+# 🔹 `grep` – Rezumat complex
+
+## 1. Teorie
+
+* **Ce este `grep`?**
+  `grep` (*Global Regular Expression Print*) caută și afișează liniile dintr-un fișier sau output care se potrivesc cu un șablon (pattern).
+* Funcționează cu text simplu sau expresii regulate.
+* Implicit: afișează **întreaga linie** care conține pattern-ul.
+
+**Sintaxă generală:**
+
+```bash
+grep [OPȚIUNI] "pattern" fisier
+```
+
+---
+
+## 2. Opțiuni importante
+
+* `-i` → ignoră diferența între litere mari/mici
+* `-n` → afișează numărul liniei
+* `-c` → afișează doar numărul de linii care se potrivesc
+* `-v` → inversează (afișează liniile care **nu** conțin pattern-ul)
+* `-w` → caută doar cuvinte întregi
+* `-r` → caută recursiv în directoare
+* `-l` → afișează doar numele fișierelor care conțin potriviri
+* `-L` → afișează doar fișierele care **nu** au potriviri
+* `-E` → folosește expresii regulate extinse (echivalent `egrep`)
+* `-o` → afișează doar partea care se potrivește, nu linia întreagă
+* `--color=auto` → evidențiază potrivirile
+
+---
+
+## 3. Exemple practice (20)
+
+### 1. Căutare simplă
+
+```bash
+grep "error" logfile.txt
+```
+
+### 2. Căutare case-insensitive
+
+```bash
+grep -i "error" logfile.txt
+```
+
+### 3. Afișează cu număr de linie
+
+```bash
+grep -n "main" program.c
+```
+
+### 4. Afișează doar numărul de potriviri
+
+```bash
+grep -c "student" users.txt
+```
+
+### 5. Exclude un pattern
+
+```bash
+grep -v "root" /etc/passwd
+```
+
+### 6. Potrivire cuvânt întreg
+
+```bash
+grep -w "cat" animals.txt
+```
+
+### 7. Căutare recursivă în directoare
+
+```bash
+grep -r "TODO" src/
+```
+
+### 8. Afișează doar fișierele care conțin pattern-ul
+
+```bash
+grep -l "main" *.c
+```
+
+### 9. Afișează fișierele care NU conțin pattern-ul
+
+```bash
+grep -L "main" *.c
+```
+
+### 10. Afișează doar potrivirea (nu întreaga linie)
+
+```bash
+grep -o "error" logfile.txt
+```
+
+### 11. Evidențiere potriviri
+
+```bash
+grep --color=auto "error" logfile.txt
+```
+
+### 12. Linii care încep cu o literă
+
+```bash
+grep "^[A-Z]" file.txt
+```
+
+### 13. Linii care se termină cu `.txt`
+
+```bash
+grep "txt$" filelist.txt
+```
+
+### 14. Expresii regulate extinse
+
+```bash
+grep -E "dog|cat" pets.txt
+```
+
+### 15. Numere pe linie
+
+```bash
+grep "^[0-9]" data.txt
+```
+
+### 16. Potriviri multiple (regex)
+
+```bash
+grep -E "(error|warning)" logfile.txt
+```
+
+### 17. Găsește linii goale
+
+```bash
+grep "^$" file.txt
+```
+
+### 18. Găsește linii care NU sunt goale
+
+```bash
+grep -v "^$" file.txt
+```
+
+### 19. Combinație cu alte comenzi (pipe)
+
+```bash
+ps -ef | grep firefox
+ls -l | grep ".txt"
+```
+
+### 20. Căutare într-o arhivă de loguri
+
+```bash
+zgrep "error" logfile.gz
+```
+
+---
+
+## 4. Rezumat
+
+* **Căutare simplă:** `grep "pattern" file`
+* **Căutare insensibilă la caz:** `grep -i`
+* **Număr linii:** `grep -c`
+* **Linii fără potriviri:** `grep -v`
+* **Recursiv:** `grep -r`
+* **Doar potrivirea:** `grep -o`
+* **Regex extins:** `grep -E`
+* **Fișiere cu/ fără potriviri:** `-l` / `-L`
+
+👉 `grep` = cel mai rapid mod de a filtra textul, mai ales împreună cu alte comenzi prin `|`.
 
 ---
