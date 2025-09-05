@@ -85,6 +85,9 @@
   ls -li   # show inode numbers
   ls -ln   # show numeric UID/GID
   ```
+---
+
+# ⬆️ [**Înapoi la Cuprins**](#-cuprins)
 
 ---
 
@@ -125,7 +128,11 @@ ls -l nume_link
 # afișează: link -> /cale/catre/target
 ````
 
+---
 
+# ⬆️ [**Înapoi la Cuprins**](#-cuprins)
+
+---
 ## 2. Creating a New User
 
 **Command:**
@@ -165,6 +172,12 @@ sudo useradd -m -p $(openssl passwd -1 password) username
      ```bash
      sudo passwd -S username
      ```
+
+---
+
+# ⬆️ [**Înapoi la Cuprins**](#-cuprins)
+
+---
 
 ## 📌 Process Fields & Options in `ps`
 
@@ -220,6 +233,10 @@ ps -o pid,lstart,cmd -p <PID>
 * **`-o`** → Customize *output format* (choose columns).
 * **`-u`** → Show processes for a *specific user*.
 * **`-f`** → Full-format listing (includes PPID, UID, time, etc).
+
+---
+
+# ⬆️ [**Înapoi la Cuprins**](#-cuprins)
 
 ---
 
@@ -353,6 +370,10 @@ dd if=/dev/urandom of=/dev/sdX bs=1M status=progress
   * `seek=` skip blocks in output before writing
   * `conv=notrunc` → don’t cut the output file
   * `status=progress` → show progress
+
+---
+
+# ⬆️ [**Înapoi la Cuprins**](#-cuprins)
 
 ---
 
@@ -558,6 +579,10 @@ id ana
 
 ---
 
+# ⬆️ [**Înapoi la Cuprins**](#-cuprins)
+
+---
+
 # 🔑 Archiving & Compression in Ubuntu (tar, zip, gzip, bzip2, xz)
 
 Archiving and compression are used to package files and reduce their size. The most common tools in Linux are `tar`, `zip`, and `gzip` (plus `bzip2` and `xz` for stronger compression).
@@ -749,6 +774,8 @@ ls -lh file.txt file.txt.gz file.txt.bz2 file.txt.xz
 
 ---
 
+# ⬆️ [**Înapoi la Cuprins**](#-cuprins)
+
 ---
 
 # 🔑 Processes & Monitoring in Ubuntu (ps, top, kill)
@@ -905,6 +932,8 @@ htop
 
 ---
 
+# ⬆️ [**Înapoi la Cuprins**](#-cuprins)
+
 ---
 
 ## 🔹 3. Killing processes (`kill`, `killall`, `pkill`)
@@ -1005,6 +1034,10 @@ kill -CONT <PID>
 * `ps` → snapshot of processes (static list, can filter, sort, format output)
 * `top/htop` → dynamic real-time monitoring
 * `kill/killall/pkill` → control processes (terminate, pause, resume)
+
+---
+
+# ⬆️ [**Înapoi la Cuprins**](#-cuprins)
 
 ---
 
@@ -1283,6 +1316,10 @@ ip route | wc -l
 
 ---
 
+# ⬆️ [**Înapoi la Cuprins**](#-cuprins)
+
+---
+
 # 🔹 Networking — 7 useful examples
 
 **Show all IP addresses and interfaces**
@@ -1327,6 +1364,10 @@ curl https://ifconfig.me
 sudo ip link set eth0 down
 sudo ip link set eth0 up
 ```
+
+---
+
+# ⬆️ [**Înapoi la Cuprins**](#-cuprins)
 
 ---
 
@@ -1636,6 +1677,10 @@ git branch -vv
 
 ---
 
+# ⬆️ [**Înapoi la Cuprins**](#-cuprins)
+
+---
+
 # 🔹 Services (systemd) — 7 useful examples
 
 **Check status of a service**
@@ -1730,6 +1775,10 @@ dpkg -l | grep python3
 ```bash
 dpkg -L curl
 ```
+
+---
+
+# ⬆️ [**Înapoi la Cuprins**](#-cuprins)
 
 ---
 
@@ -1863,6 +1912,10 @@ ls -l | grep ".txt"     # doar fișiere .txt
 * **`seq`** → generează liste de numere (intervale, pași, formate)
 * **`cat`** → afișează/unește fișiere, numerotare linii, elimină spații
 * **`uniq`** → elimină duplicate, afișează contorizare, doar unice/duplicate
+
+---
+
+# ⬆️ [**Înapoi la Cuprins**](#-cuprins)
 
 ---
 
@@ -2055,6 +2108,10 @@ awk '{gsub("Hip hop", "Rap"); print}' music.txt
 * **Blocuri speciale:** `BEGIN {}`, `END {}`
 
 👉 `awk` = cel mai puternic utilitar de lucru pe fișiere text structurate.
+
+---
+
+# ⬆️ [**Înapoi la Cuprins**](#-cuprins)
 
 ---
 
