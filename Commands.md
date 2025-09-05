@@ -1260,6 +1260,53 @@ ip route | wc -l
 
 ---
 
+# 🔹 Networking — 7 useful examples
+
+**Show all IP addresses and interfaces**
+
+```bash
+ip addr show
+```
+
+**Check connectivity with ping**
+
+```bash
+ping -c 4 google.com
+```
+
+**Display the routing table**
+
+```bash
+ip route show
+```
+
+**Test an HTTP request (headers only)**
+
+```bash
+curl -I https://example.com
+```
+
+**Check open TCP/UDP ports (using ss)**
+
+```bash
+ss -tuln
+```
+
+**Show public IP address (via curl)**
+
+```bash
+curl https://ifconfig.me
+```
+
+**Bring a network interface down/up**
+
+```bash
+sudo ip link set eth0 down
+sudo ip link set eth0 up
+```
+
+---
+
 # 🔑 Git Essentials — (init, add, commit, reset, branch)
 
 ## 1) `git init` — initialize a repository
@@ -1563,3 +1610,102 @@ git branch -vv
 * `git status` des și `git log --oneline --graph --decorate` pentru context rapid.
 * `--hard` elimină modificări locale — folosește-l doar când ești sigur.
 * După `--amend`/`reset` peste ceva deja împins pe remote, ai nevoie de `git push --force-with-lease`.
+
+---
+
+# 🔹 Services (systemd) — 7 useful examples
+
+**Check status of a service**
+
+```bash
+systemctl status ssh
+```
+
+**Start / Stop / Restart a service**
+
+```bash
+sudo systemctl start nginx
+sudo systemctl stop nginx
+sudo systemctl restart nginx
+```
+
+**Enable / Disable autostart at boot**
+
+```bash
+sudo systemctl enable nginx
+sudo systemctl disable nginx
+```
+
+**Check if a service is active or enabled**
+
+```bash
+systemctl is-active cron
+systemctl is-enabled cron
+```
+
+**View recent logs for a service**
+
+```bash
+journalctl -u nginx -n 50 --no-pager
+```
+
+**List only running services**
+
+```bash
+systemctl list-units --type=service --state=running
+```
+
+**Mask / Unmask a service (prevent manual start)**
+
+```bash
+sudo systemctl mask telnet
+sudo systemctl unmask telnet
+```
+
+---
+
+# 🔹 Packages (APT/Dpkg) — 7 useful examples
+
+**Update package index**
+
+```bash
+sudo apt update
+```
+
+**Upgrade installed packages**
+
+```bash
+sudo apt upgrade
+```
+
+**Install a package**
+
+```bash
+sudo apt install curl
+```
+
+**Remove a package (with configs)**
+
+```bash
+sudo apt remove --purge nginx
+```
+
+**Search for a package by keyword**
+
+```bash
+apt search openssh
+```
+
+**Check if a package is installed**
+
+```bash
+dpkg -l | grep python3
+```
+
+**List files installed by a package**
+
+```bash
+dpkg -L curl
+```
+
+---
