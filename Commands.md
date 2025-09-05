@@ -2291,3 +2291,308 @@ zgrep "error" logfile.gz
 # ⬆️ [**Înapoi la Cuprins**](#-cuprins)
 
 ---
+
+# 🔹 `ssh` – Rezumat complex
+
+## 1. Teorie
+
+* **Ce este `ssh`?**
+  `ssh` (*Secure Shell*) este protocolul standard pentru conectare securizată la servere și echipamente remote.
+  Oferă: autentificare sigură, criptare a traficului și tuneluri securizate.
+
+* **Componente**:
+
+  * **ssh client** – comanda pe care o rulezi din terminal.
+  * **sshd** – serviciul (daemon) care rulează pe server și acceptă conexiuni.
+
+* **Sintaxă generală**:
+
+  ```bash
+  ssh [OPȚIUNI] user@host [command]
+  ```
+
+---
+
+## 2. Opțiuni importante
+
+* `-p` → specifică portul (implicit 22)
+* `-i` → folosește un fișier cheie privată pentru autentificare
+* `-L` → forward port local (tunel local)
+* `-R` → forward port remote (tunel invers)
+* `-N` → nu execută comandă, doar ține conexiunea (folosit la tuneluri)
+* `-T` → dezactivează alocarea unui pseudo-terminal (folosit la scripturi)
+* `-v` → verbose/debug (mai multe `-v` = mai detaliat)
+* `-X` / `-Y` → activează forwarding grafic (X11 forwarding)
+
+---
+
+## 3. Exemple practice (20)
+
+### 1. Conectare simplă
+
+```bash
+ssh user@server
+```
+
+### 2. Specificare port
+
+```bash
+ssh -p 2222 user@server
+```
+
+### 3. Conectare și executarea unei comenzi remote
+
+```bash
+ssh user@server "uptime"
+```
+
+### 4. Conectare cu key file specific
+
+```bash
+ssh -i ~/.ssh/id_rsa user@server
+```
+
+### 5. Debugging conexiune
+
+```bash
+ssh -v user@server
+```
+
+### 6. Copiere key publică pe server (autentificare fără parolă)
+
+```bash
+ssh-copy-id user@server
+```
+
+### 7. Forward port local (tunel local)
+
+```bash
+ssh -L 8080:localhost:80 user@server
+```
+
+→ accesezi `http://localhost:8080` și vezi portul 80 al serverului.
+
+### 8. Forward port remote (tunel invers)
+
+```bash
+ssh -R 9090:localhost:22 user@server
+```
+
+→ serverul poate accesa portul 9090 pentru a se conecta la SSH-ul tău local.
+
+### 9. Doar tunel (fără shell)
+
+```bash
+ssh -N -L 8080:localhost:80 user@server
+```
+
+### 10. Conectare fără terminal interactiv (script)
+
+```bash
+ssh -T git@github.com
+```
+
+### 11. Rulare comandă ca root prin sudo
+
+```bash
+ssh user@server "sudo systemctl restart nginx"
+```
+
+### 12. Scurtături prin config
+
+Fișier `~/.ssh/config`:
+
+```
+Host myserver
+  HostName 192.168.1.50
+  User student
+  Port 2222
+```
+
+Conectare:
+
+```bash
+ssh myserver
+```
+
+### 13. Proxy prin alt server (jump host)
+
+```bash
+ssh -J user@gateway user@internal
+```
+
+### 14. Forward grafic (X11)
+
+```bash
+ssh -X user@server
+xclock
+```
+
+### 15. Transfer fișier prin `scp`
+
+```bash
+scp file.txt user@server:/home/user/
+```
+
+### 16. Transfer recursiv director prin `scp`
+
+```bash
+scp -r project/ user@server:/home/user/
+```
+
+### 17. Copiere fișiere cu progres (folosind `rsync` prin SSH)
+
+```bash
+rsync -avz -e ssh project/ user@server:/home/user/project/
+```
+
+### 18. Test rapid dacă portul SSH este deschis
+
+```bash
+ssh -p 22 -o ConnectTimeout=5 user@server "exit"
+```
+
+### 19. Evitare verificare host key (⚠️ nesigur)
+
+```bash
+ssh -o StrictHostKeyChecking=no user@server
+```
+
+### 20. Multiplexare conexiuni (reutilizare)
+
+```bash
+ssh -M -S /tmp/sshsocket user@server
+ssh -S /tmp/sshsocket user@server "uptime"
+ssh -S /tmp/sshsocket -O exit user@server
+```
+
+---
+
+## 4. Rezumat
+
+* **Conectare simplă:** `ssh user@host`
+* **Port custom:** `-p`
+* **Autentificare cu key:** `-i`
+* **Tunel local / remote:** `-L` / `-R`
+* **Fără shell:** `-N`
+* **Forward grafic:** `-X`
+* **Debugging:** `-v`
+* **Copiere fișiere:** `scp`, `rsync`
+
+👉 `ssh` = instrumentul de bază pentru administrare la distanță, tuneluri securizate și transfer fișiere.
+
+---
+
+# ⬆️ [**Înapoi la Cuprins**](#-cuprins)
+
+---
+
+# 🔹 `ssh` – Conectare fără parolă
+
+## 1. Teorie
+
+* În loc să tastezi parola de fiecare dată, poți folosi **chei SSH**.
+* O cheie SSH are două părți:
+
+  * **private key** (rămâne pe client, de ex. `~/.ssh/id_rsa`)
+  * **public key** (pusă pe server, în `~/.ssh/authorized_keys`).
+* Odată configurat, te autentifici doar cu cheia, fără parolă.
+
+---
+
+## 2. Pași de configurare
+
+### 1. Generează o pereche de chei
+
+```bash
+ssh-keygen -t rsa -b 4096 -C "student@myhost"
+```
+
+* `-t rsa` → tipul cheii
+* `-b 4096` → lungime (mai sigur)
+* `-C` → comentariu (opțional, apare în fișier)
+
+Cheia privată: `~/.ssh/id_rsa`
+Cheia publică: `~/.ssh/id_rsa.pub`
+
+---
+
+### 2. Copiază cheia publică pe server
+
+```bash
+ssh-copy-id user@server
+```
+
+sau manual:
+
+```bash
+cat ~/.ssh/id_rsa.pub | ssh user@server "mkdir -p ~/.ssh && cat >> ~/.ssh/authorized_keys"
+```
+
+---
+
+### 3. Conectează-te fără parolă
+
+```bash
+ssh user@server
+```
+
+---
+
+## 3. Exemple practice
+
+**1. Generare cheie nouă fără parolă suplimentară**
+
+```bash
+ssh-keygen -t ed25519 -f ~/.ssh/id_ed25519 -N ""
+```
+
+(`-N ""` → fără passphrase pe cheie, conectare directă)
+
+**2. Copiere rapidă cheie**
+
+```bash
+ssh-copy-id -i ~/.ssh/id_ed25519.pub user@server
+```
+
+**3. Verificare pe server (cheia instalată)**
+
+```bash
+cat ~/.ssh/authorized_keys
+```
+
+**4. Conectare folosind cheia explicit**
+
+```bash
+ssh -i ~/.ssh/id_ed25519 user@server
+```
+
+**5. Definire shortcut în `~/.ssh/config`**
+
+```
+Host myserver
+  HostName 192.168.1.100
+  User student
+  IdentityFile ~/.ssh/id_ed25519
+```
+
+Conectare rapidă:
+
+```bash
+ssh myserver
+```
+
+---
+
+👉 **Rezumat pentru examene:**
+
+* `ssh-keygen` → generezi cheie privată/publică
+* `ssh-copy-id user@server` → instalezi cheia pe server
+* `ssh user@server` → te conectezi fără parolă
+* `~/.ssh/config` → scurtături și configurări personalizate
+
+---
+
+# ⬆️ [**Înapoi la Cuprins**](#-cuprins)
+
+---
