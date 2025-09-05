@@ -2742,6 +2742,52 @@ lscpu | awk '/L2 cache/ {print $NF}'
 
 ---
 
+### 1) AWK — printează 2 coloane (artist + album) din fișier TAB-delimitat `music.txt`
+
+```bash
+awk -F'\t' '{print "Artist:", $1, "| Album:", $2}' music.txt
+```
+
+### 2) GREP + AWK — filtrează după „Warner Bros” și printează coloanele 1 și 2
+
+```bash
+grep -F "Warner Bros" music.txt | awk -F'\t' '{print $1, $2}'
+```
+
+### 3) CUT — afișează **doar partea până la primul punct** din fiecare linie (ex. `practice_text.txt`)
+
+```bash
+cut -d'.' -f1 practice_text.txt
+```
+
+Foarte bună întrebare 👌
+
+În exemplul de mai sus:
+
+```bash
+awk -F'\t' '{print "Artist:", $1, "| Album:", $2}' music.txt
+```
+
+* **`-F`** = *field separator* (separator de câmpuri)
+* Implicit, `awk` împarte fiecare linie după **spațiu/tab**.
+* Dacă specifici `-F'\t'`, îi spui lui `awk` că **delimitatorul e TAB**.
+
+🔎 Exemple:
+
+1. Dacă ai fișier delimitat prin **virgulă (CSV)**:
+
+```bash
+awk -F',' '{print $1, $2}' fisier.csv
+```
+
+2. Dacă e delimitat prin **două puncte** (ca `/etc/passwd`):
+
+```bash
+awk -F':' '{print $1, $3}' /etc/passwd
+```
+
+---
+
 # ⬆️ [**Înapoi la Cuprins**](#-cuprins)
 
 ---
