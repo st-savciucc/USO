@@ -17,7 +17,10 @@
 - [Comenzi de lucru cu fișiere (sort, seq, cat, uniq)](#-sort--sortarea-textului)
 - [awk – procesarea textului](#-awk--rezumat-complex)
 - [grep – căutare text](#-grep--rezumat-complex)
+- [ssh – Rezumat complex](#-ssh--rezumat-complex)
+- [ssh – Conectare fără parolă](#-ssh--conectare-fără-parolă)
 - [Git Essentials (init, add, commit, reset, branch)](#-git-essentials--init-add-commit-reset-branch)
+
 
 
 ---
