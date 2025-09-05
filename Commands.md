@@ -1194,7 +1194,7 @@ ip route | wc -l
 
 ---
 
-# 🔑 Git Essentials — More Examples (init, add, commit, reset, branch)
+# 🔑 Git Essentials — (init, add, commit, reset, branch)
 
 ## 1) `git init` — initialize a repository
 
