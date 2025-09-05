@@ -659,3 +659,262 @@ ls -lh file.txt file.txt.gz file.txt.bz2 file.txt.xz
 * `gzip` / `bzip2` / `xz` → compress single files with different strength/speed trade-offs
 
 ---
+
+---
+
+# 🔑 Processes & Monitoring in Ubuntu (ps, top, kill)
+
+Linux treats each running program as a **process**. System admins often need to list processes, inspect CPU/memory usage, and terminate processes. The three main tools are **`ps`**, **`top`**, and **`kill`**.
+
+---
+
+## 🔹 1. Working with `ps`
+
+`ps` (process status) lists information about running processes.
+
+### a) List processes for the current user
+
+```bash
+ps
+```
+
+* Default: shows PID, TTY, TIME, CMD for your own processes.
+
+---
+
+### b) List all processes in the system
+
+```bash
+ps -e
+```
+
+* `-e` → show every process
+
+---
+
+### c) Full format with extra details
+
+```bash
+ps -ef
+```
+
+* `-f` → full format (UID, PID, PPID, start time, etc.)
+* `-ef` → common on many Linux distributions (SysV style)
+
+---
+
+### d) Display specific columns
+
+```bash
+ps -u student -o pid,ppid,cmd,%cpu,%mem --sort=ppid
+```
+
+* `-u student` → processes of user `student`
+* `-o` → output format: PID, parent PID, command, CPU%, MEM%
+* `--sort=ppid` → sort processes by parent PID
+
+---
+
+### e) Show processes with a controlling terminal
+
+```bash
+ps -eo pid,tty,cmd --tty | sort -k1,1nr
+```
+
+* `-e` → all processes
+* `-o` → select output columns (PID, TTY, CMD)
+* `--tty` → only processes attached to a terminal
+* `sort -k1,1nr` → sort by PID in descending order
+
+---
+
+### f) Display only processes of root user
+
+```bash
+ps -U root -o pid,cmd,etime --sort=etime
+```
+
+* `-U root` → filter by real user ID (root)
+* `etime` → elapsed time since start
+* `--sort=etime` → sort by run time
+
+---
+
+### g) Count how many processes a user has
+
+```bash
+ps -u student --no-headers | wc -l
+```
+
+* `--no-headers` → remove header row
+* `wc -l` → count lines = number of processes
+
+---
+
+---
+
+## 🔹 2. Monitoring with `top` (and `htop`)
+
+`top` shows real-time process activity (interactive).
+
+### a) Basic usage
+
+```bash
+top
+```
+
+* Displays processes with CPU and memory usage updated live
+
+---
+
+### b) Sort processes by memory
+
+Inside `top`:
+
+* Press **Shift + M** → sort by memory usage
+
+---
+
+### c) Sort processes by CPU
+
+Inside `top`:
+
+* Press **Shift + P** → sort by CPU usage
+
+---
+
+### d) Show only processes of a specific user
+
+```bash
+top -u student
+```
+
+* `-u student` → filter processes of user `student`
+
+---
+
+### e) Limit number of processes shown
+
+```bash
+top -n 1 -b | head -20
+```
+
+* `-n 1` → refresh only once (non-interactive)
+* `-b` → batch mode (output suitable for scripts)
+* `head -20` → show first 20 lines
+
+---
+
+### f) Alternative: `htop`
+
+```bash
+htop
+```
+
+* Colorful, user-friendly alternative to `top`
+* Allows scrolling, searching (`/`), killing processes (`F9`), and filtering by user (`u`).
+
+---
+
+---
+
+## 🔹 3. Killing processes (`kill`, `killall`, `pkill`)
+
+Sometimes a process hangs or misbehaves → you must terminate it.
+
+### a) Kill a process by PID
+
+```bash
+kill 1234
+```
+
+* `kill` → send a signal (default: `SIGTERM`)
+* `1234` → PID of the process
+
+---
+
+### b) Kill a process forcefully
+
+```bash
+kill -9 1234
+```
+
+* `-9` → `SIGKILL` (force kill, cannot be ignored)
+* Use only if normal kill does not work
+
+---
+
+### c) Kill all processes by name
+
+```bash
+killall firefox
+```
+
+* `killall` → kill by process name
+* `firefox` → kills all processes named firefox
+
+---
+
+### d) Use `pkill` with pattern matching
+
+```bash
+pkill -u student bash
+```
+
+* `pkill` → kill based on pattern
+* `-u student` → only for user `student`
+* `bash` → matches processes named bash
+
+---
+
+### e) Send other signals (not just kill)
+
+```bash
+kill -STOP 1234   # pause process
+kill -CONT 1234   # resume process
+```
+
+* `-STOP` → suspend process
+* `-CONT` → continue a stopped process
+
+---
+
+---
+
+## 🔹 Practical exam-style tasks
+
+1. **List processes of current user sorted by memory usage**
+
+```bash
+ps -u $(whoami) -o pid,cmd,%mem --sort=-%mem
+```
+
+2. **Find and kill the process using the most CPU**
+
+```bash
+ps -eo pid,cmd,%cpu --sort=-%cpu | head -2
+kill <PID>
+```
+
+3. **Check how many unique users have running processes**
+
+```bash
+ps -eo user= | sort -u | wc -l
+```
+
+4. **Suspend and resume a process**
+
+```bash
+kill -STOP <PID>
+kill -CONT <PID>
+```
+
+---
+
+👉 **In summary:**
+
+* `ps` → snapshot of processes (static list, can filter, sort, format output)
+* `top/htop` → dynamic real-time monitoring
+* `kill/killall/pkill` → control processes (terminate, pause, resume)
+
+---
