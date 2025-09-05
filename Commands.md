@@ -2744,17 +2744,19 @@ lscpu | awk '/L2 cache/ {print $NF}'
 
 ## 🔹 AWK — printează 2 coloane (artist + album) din fișier TAB-delimitat `music.txt`
 
+
+
 ```bash
 awk -F'\t' '{print "Artist:", $1, "| Album:", $2}' music.txt
 ```
 
-## 1) GREP + AWK — filtrează după „Warner Bros” și printează coloanele 1 și 2
+### 1) GREP + AWK — filtrează după „Warner Bros” și printează coloanele 1 și 2
 
 ```bash
 grep -F "Warner Bros" music.txt | awk -F'\t' '{print $1, $2}'
 ```
 
-## 2) CUT — afișează **doar partea până la primul punct** din fiecare linie (ex. `practice_text.txt`)
+### 2) CUT — afișează **doar partea până la primul punct** din fiecare linie (ex. `practice_text.txt`)
 
 ```bash
 cut -d'.' -f1 practice_text.txt
