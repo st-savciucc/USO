@@ -15,11 +15,12 @@
 - [Servicii (systemd)](#-services-systemd--7-useful-examples)
 - [Pachete (APT/Dpkg)](#-packages-aptdpkg--7-useful-examples)
 - [Comenzi de lucru cu fișiere (sort, seq, cat, uniq)](#-sort--sortarea-textului)
-- [awk – procesarea textului](#-awk--rezumat-complex)
-- [grep – căutare text](#-grep--rezumat-complex)
-- [ssh – Rezumat complex](#-ssh--rezumat-complex)
-- [ssh – Conectare fără parolă](#-ssh--conectare-fără-parolă)
+- [awk – rezumat complex](#-awk--rezumat-complex)
+- [grep – rezumat complex](#-grep--rezumat-complex)
+- [SSH – rezumat complex](#-ssh--rezumat-complex)
+- [SSH – conectare fără parolă (chei SSH)](#-ssh--conectare-fără-parolă)
 - [Git Essentials (init, add, commit, reset, branch)](#-git-essentials--init-add-commit-reset-branch)
+- [Exemple utile (scripturi și comenzi practice)](#-exemple-utile)
 
 
 
@@ -2593,6 +2594,151 @@ ssh myserver
 * `ssh-copy-id user@server` → instalezi cheia pe server
 * `ssh user@server` → te conectezi fără parolă
 * `~/.ssh/config` → scurtături și configurări personalizate
+
+---
+
+# ⬆️ [**Înapoi la Cuprins**](#-cuprins)
+
+---
+
+# 📌 Exemple utile
+
+---
+
+## 🔹 Fișier cu 2500 de linii
+
+**Pe scurt:**
+
+```bash
+mkdir -p ciocolata
+yes "There is nothing better than a friend, unless chocolate" | head -n 2500 > ciocolata/neagra
+```
+
+**Verificare:**
+
+```bash
+wc -l ciocolata/neagra   # trebuie să arate 2500
+```
+
+---
+
+## 🔹 Script simplu (2500 linii)
+
+```bash
+#!/bin/bash
+# Generează fișierul ciocolata/neagra cu 2500 de linii
+
+mkdir -p ciocolata
+for i in $(seq 2500); do
+  echo "There is nothing better than a friend, unless chocolate"
+done > ciocolata/neagra
+
+echo "Fișierul a fost creat cu $(wc -l < ciocolata/neagra) linii."
+```
+
+**Rulare:**
+
+```bash
+chmod +x script.sh
+./script.sh
+```
+
+---
+
+## 🔹 Creare fișiere numerotate (one-liner)
+
+```bash
+for i in $(seq 1 10); do echo "Hello world $i" > file_$i.txt; done
+```
+
+🔎 Explicație:
+
+* `seq 1 10` → numere 1…10
+* `file_$i.txt` → creează `file_1.txt … file_10.txt`
+* conținut: „Hello world X”
+
+**Copiere fișier existent de 10 ori:**
+
+```bash
+for i in $(seq 1 10); do cp original.txt copy_$i.txt; done
+```
+
+---
+
+## 🔹 Script `find_files.sh` (a) – fișiere, dimensiune, owner
+
+```bash
+#!/bin/bash
+# list files with name, size, owner
+
+if [ $# -lt 1 ]; then
+  echo "Usage: $0 <directory>"
+  exit 1
+fi
+
+DIR="$1"
+
+find "$DIR" -type f -exec stat -c "File: %n | Size: %s bytes | Owner: %U" {} \;
+```
+
+---
+
+## 🔹 (b) Doar fișiere > 1 KB
+
+```bash
+find "$DIR" -type f -size +1k -exec stat -c "File: %n | Size: %s bytes | Owner: %U" {} \;
+```
+
+---
+
+## 🔹 (c) Interval de dimensiuni
+
+```bash
+find "$DIR" -type f -size +"$MIN"c -size -"$MAX"c \
+  -exec stat -c "File: %n | Size: %s bytes | Owner: %U" {} \;
+```
+
+🔎 Parametri:
+
+* `MIN` = dimensiune minimă (bytes)
+* `MAX` = dimensiune maximă (bytes)
+
+**Exemplu:**
+
+```bash
+./find_files.sh /etc 1024 2048
+```
+
+---
+
+## 🔹 (d) Script – `ls` cu probabilitate 1/3
+
+```bash
+#!/bin/bash
+# ls cu probabilitate de 1/3
+
+if [ $((RANDOM % 3)) -eq 0 ]; then
+  ls
+else
+  echo "Nu se execută ls."
+fi
+```
+
+---
+
+## 🔹 (b) One-liner – dimensiune cache L2
+
+```bash
+lscpu | grep "L2 cache" | awk '{print $3}'
+```
+
+sau:
+
+```bash
+lscpu | awk '/L2 cache/ {print $NF}'
+```
+
+🔎 Afișează strict dimensiunea cache L2 (ex: `256K`).
 
 ---
 
