@@ -2287,3 +2287,7 @@ zgrep "error" logfile.gz
 👉 `grep` = cel mai rapid mod de a filtra textul, mai ales împreună cu alte comenzi prin `|`.
 
 ---
+
+# ⬆️ [**Înapoi la Cuprins**](#-cuprins)
+
+---
