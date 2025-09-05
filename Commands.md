@@ -918,3 +918,582 @@ kill -CONT <PID>
 * `kill/killall/pkill` → control processes (terminate, pause, resume)
 
 ---
+
+# 🔑 Networking Basics in Ubuntu (ip, ping, curl, ip route)
+
+Networking tools help inspect interfaces, test connectivity, and view routing information.
+
+---
+
+## 🔹 1. The `ip` command
+
+The modern replacement for `ifconfig`. Used for showing/managing network interfaces, addresses, and routes.
+
+### a) Show all network interfaces and addresses
+
+```bash
+ip addr show
+```
+
+* `addr` → show IP addresses
+* Shows IPv4, IPv6, broadcast, MAC
+
+---
+
+### b) Show interfaces in brief form
+
+```bash
+ip -br a
+```
+
+* `-br` → brief mode (clean, table-like output)
+
+---
+
+### c) Show info for one interface
+
+```bash
+ip addr show dev ens3
+```
+
+* `dev ens3` → limit output to interface `ens3`
+
+---
+
+### d) Show only IPv4 addresses of an interface
+
+```bash
+ip -4 -o addr show dev ens3 | awk '{print $4}'
+```
+
+* `-4` → only IPv4
+* `-o` → one-line per address
+* `awk '{print $4}'` → extract `IP/mask`
+
+---
+
+### e) Add or delete an IP address
+
+```bash
+sudo ip addr add 192.168.1.100/24 dev ens3
+sudo ip addr del 192.168.1.100/24 dev ens3
+```
+
+* `addr add/del` → add or delete address on interface
+* `/24` → subnet mask
+
+---
+
+---
+
+## 🔹 2. The `ping` command
+
+Tests connectivity to another host using ICMP packets.
+
+### a) Basic ping to a host
+
+```bash
+ping -c 4 google.com
+```
+
+* `-c 4` → send 4 packets only
+
+---
+
+### b) Ping with timeout
+
+```bash
+ping -w 5 8.8.8.8
+```
+
+* `-w 5` → stop after 5 seconds regardless of replies
+
+---
+
+### c) Ping until stopped manually
+
+```bash
+ping 1.1.1.1
+```
+
+* Continuous ping (press `Ctrl+C` to stop)
+
+---
+
+### d) Ping multiple hosts in a script
+
+```bash
+for h in 8.8.8.8 1.1.1.1 google.com; do
+  ping -c1 $h &>/dev/null && echo "$h is up" || echo "$h is down"
+done
+```
+
+* Quick connectivity check for a list of hosts
+
+---
+
+---
+
+## 🔹 3. The `curl` command
+
+Transfers data from or to a server (HTTP, HTTPS, FTP, etc.).
+
+### a) Fetch a webpage
+
+```bash
+curl https://example.com
+```
+
+* Outputs the raw HTML page to terminal
+
+---
+
+### b) Save output to a file
+
+```bash
+curl -o page.html https://example.com
+```
+
+* `-o page.html` → save output to `page.html`
+
+---
+
+### c) Silent mode (no progress info)
+
+```bash
+curl -s https://example.com
+```
+
+* `-s` → silent (don’t show progress bar or errors)
+
+---
+
+### d) Get your public IP
+
+```bash
+curl -s ifconfig.me
+```
+
+* Queries service `ifconfig.me` to return your external IP
+
+---
+
+### e) Download a file
+
+```bash
+curl -O https://example.com/file.zip
+```
+
+* `-O` → save with same name as remote file
+
+---
+
+### f) Send a POST request with data
+
+```bash
+curl -X POST -d "user=test&pass=123" https://example.com/login
+```
+
+* `-X POST` → use POST method
+* `-d` → data to send
+
+---
+
+---
+
+## 🔹 4. The `ip route` command
+
+Shows and manages the kernel’s routing table.
+
+### a) Show default route
+
+```bash
+ip route show default
+```
+
+* Shows which gateway is used for internet traffic
+
+---
+
+### b) Show full routing table
+
+```bash
+ip route show
+```
+
+* Lists all known routes (local, default, connected networks)
+
+---
+
+### c) Add a new route
+
+```bash
+sudo ip route add 192.168.2.0/24 via 192.168.1.1
+```
+
+* Route traffic to `192.168.2.0/24` via gateway `192.168.1.1`
+
+---
+
+### d) Delete a route
+
+```bash
+sudo ip route del 192.168.2.0/24
+```
+
+* Removes the previously added route
+
+---
+
+### e) Show route to a specific host
+
+```bash
+ip route get 8.8.8.8
+```
+
+* Displays which interface/gateway will be used to reach `8.8.8.8`
+
+---
+
+---
+
+## 🔹 Practical exam-style tasks
+
+1. **Find and display only the IPv4 address of interface `ens3`**
+
+```bash
+ip -4 -o addr show dev ens3 | awk '{print $4}'
+```
+
+2. **Check if gateway is reachable**
+
+```bash
+ping -c 3 $(ip route show default | awk '{print $3}')
+```
+
+3. **Get the public IP of your VM**
+
+```bash
+curl -s ifconfig.me
+```
+
+4. **Display number of routes in routing table**
+
+```bash
+ip route | wc -l
+```
+
+---
+
+👉 **In summary:**
+
+* `ip` → inspect & configure interfaces/addresses
+* `ping` → test connectivity (ICMP echo)
+* `curl` → fetch web resources or public IP
+* `ip route` → view/modify routing table
+
+---
+
+# 🔑 Git Essentials — More Examples (init, add, commit, reset, branch)
+
+## 1) `git init` — initialize a repository
+
+**a) Init într-un director existent (proiect deja creat)**
+
+```bash
+cd ~/projects/myapp
+git init
+git status
+```
+
+* `git init` → creează `.git/` (repo gol).
+* `git status` → vezi ce fișiere sunt „untracked”.
+
+**b) Init cu nume de branch inițial explicit (unele sisteme cer `main`)**
+
+```bash
+git init --initial-branch=main
+```
+
+* `--initial-branch=main` → setează default branch la `main`.
+
+**c) Convert un folder în repo și ignoră build-urile**
+
+```bash
+git init
+printf "node_modules/\n*.log\nbuild/\n" > .gitignore
+git add .gitignore
+git commit -m "chore: add basic .gitignore"
+```
+
+---
+
+## 2) `git add` — stage changes
+
+**a) Adaugă un singur fișier**
+
+```bash
+git add app.py
+```
+
+**b) Adaugă toate fișierele noi și modificările (inclusiv untracked)**
+
+```bash
+git add -A
+```
+
+* `-A` → echivalent cu `--all`, include adăugări/ștergeri/modificări.
+
+**c) Adaugă doar fișierele deja urmărite (tracked)**
+
+```bash
+git add -u
+```
+
+* `-u` → actualizează doar fișierele urmărite (bun pt „update fără fișiere noi”).
+
+**d) Adaugă după un pattern**
+
+```bash
+git add "*.sh"
+git add docs/*.md
+```
+
+**e) Stage interactiv (selectezi hunks)**
+
+```bash
+git add -p
+```
+
+* `-p` → îți arată „hunk”-uri; alegi ce intră în commit.
+
+**f) Include tot dintr-un subfolder, exclude ceva**
+
+```bash
+git add dir/
+git reset HEAD dir/bigfile.bin   # scoate din stage acel fișier
+```
+
+---
+
+## 3) `git commit` — snapshot with message
+
+**a) Commit standard**
+
+```bash
+git commit -m "feat: add login form"
+```
+
+**b) Commit și cu body (mesaj pe 2 linii)**
+
+```bash
+git commit -m "feat: import CSV" -m "Handles quoted fields and BOM."
+```
+
+* al doilea `-m` → corpul mesajului.
+
+**c) Commit toate modificările urmărite, într-o singură mișcare**
+
+```bash
+git commit -am "fix: adjust timeouts"
+```
+
+* `-a` → adaugă automat modificările fișierelor *tracked* (nu și untracked).
+
+**d) Amend — ai uitat un fișier**
+
+```bash
+git add missing.cfg
+git commit --amend -m "feat: add login form (include cfg)"
+```
+
+* `--amend` → rescrie ultimul commit (nu face asta după ce ai „pushed”, decât cu grijă).
+
+**e) Commit cu autor explicit (exerciții scripting)**
+
+```bash
+git commit --author="John Doe <john@ex.com>" -m "docs: add README"
+```
+
+**f) Commit gol (marchezi un eveniment)**
+
+```bash
+git commit --allow-empty -m "chore: trigger CI"
+```
+
+**g) Afișează fișierele schimbate în ultimul commit (util în subiecte)**
+
+```bash
+git show --name-only --oneline
+```
+
+---
+
+## 4) `git reset` — move HEAD / unstage / discard
+
+> Gândește-te așa: **soft** = doar HEAD se mută; **mixed** (implicit) = scoate din stage; **hard** = aruncă și din working tree.
+
+**a) „Undo last commit”, păstrând modificările în stage (squash-ready)**
+
+```bash
+git reset --soft HEAD~1
+```
+
+* folosit ca pas înainte de a combina commits.
+
+**b) Scoate din stage, păstrează în working tree (corecție după `git add`)**
+
+```bash
+git reset HEAD
+# sau pentru un fișier anume:
+git reset HEAD path/to/file
+```
+
+* (fără flag) = `--mixed`.
+
+**c) Revine la ultimul commit, aruncând schimbările locale (atenție!)**
+
+```bash
+git reset --hard HEAD
+```
+
+**d) Resetează un fișier la versiunea din ultimul commit**
+
+```bash
+git checkout -- app.py          # varianta veche
+git restore --source=HEAD app.py  # varianta modernă
+```
+
+**e) Combină ultimele 2 commits (pattern foarte des întâlnit)**
+
+```bash
+git reset --soft HEAD~2
+git commit -m "feat: combine last two commits"
+```
+
+**f) Mută branch-ul la un anumit commit (repoziționezi HEAD + branch)**
+
+```bash
+git reset --hard <commit-hash>
+```
+
+---
+
+## 5) `git branch` — create / rename / delete / list
+
+**a) Creează și comută pe un branch nou**
+
+```bash
+git switch -c feature/auth
+# sau: git checkout -b feature/auth
+```
+
+**b) Creează un branch dintr-un commit specific**
+
+```bash
+git branch hotfix-conn 7e1d0f3
+git switch hotfix-conn
+```
+
+**c) Redenumește branch-ul curent**
+
+```bash
+git branch -m teme
+# forțează dacă există deja: git branch -M teme
+```
+
+**d) Șterge un branch local**
+
+```bash
+git branch -d old-branch     # șterge doar dacă e fully merged
+git branch -D old-branch     # forțează (atenție!)
+```
+
+**e) Listează branch-urile cu ultimul commit scurt**
+
+```bash
+git branch -vv
+```
+
+**f) Setează upstream pentru un branch nou (pregătit pentru push)**
+
+```bash
+git push -u origin feature/auth
+```
+
+* `-u` → memorează upstream, ca mai târziu `git push`/`pull` fără argumente.
+
+**g) Schimbă numele unui branch local și actualizează remote**
+
+```bash
+git branch -m oldname newname
+git push origin -u newname
+git push origin --delete oldname
+```
+
+---
+
+## 🎯 Exam-style drills (pe temele cerute)
+
+**1) Init + 3 commits „add: File <N>” apoi combine ultimele două într-unul**
+
+```bash
+git init --initial-branch=main
+printf "a\n" > f1.txt; git add f1.txt; git commit -m "add: File 1"
+printf "b\n" > f2.txt; git add f2.txt; git commit -m "add: File 2"
+printf "c\n" > f3.txt; git add f3.txt; git commit -m "add: File 3"
+git reset --soft HEAD~2
+git commit -m "add: Files 2 3"
+```
+
+**2) Staging selectiv + amend**
+
+```bash
+printf "x\n" > app.py
+printf "y\n" > notes.txt
+git add -p app.py             # doar anumite hunk-uri din app.py
+git commit -m "feat: partial add in app.py"
+git add notes.txt             # ai uitat notes.txt
+git commit --amend -m "feat: partial add in app.py + notes"
+```
+
+**3) Unstage rapid tot, dar păstrează modificările**
+
+```bash
+git reset HEAD .
+```
+
+**4) Creează branch dintr-un commit anterior și lucrează acolo**
+
+```bash
+git log --oneline            # găsește <hash>
+git branch exp/<hash> <hash>
+git switch exp/<hash>
+```
+
+**5) Redenumește branch curent și setează upstream nou**
+
+```bash
+git branch -m tema1
+git push -u origin tema1
+```
+
+**6) Aruncă toate modificările locale și revino la ultimul commit**
+
+```bash
+git reset --hard HEAD
+```
+
+**7) Listă scurtă a branch-urilor cu ultimul commit (verificare rapidă)**
+
+```bash
+git branch -vv
+```
+
+---
+
+## Tips & gotchas
+
+* `git status` des și `git log --oneline --graph --decorate` pentru context rapid.
+* `--hard` elimină modificări locale — folosește-l doar când ești sigur.
+* După `--amend`/`reset` peste ceva deja împins pe remote, ai nevoie de `git push --force-with-lease`.
