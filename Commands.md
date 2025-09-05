@@ -266,3 +266,205 @@ dd if=/dev/urandom of=/dev/sdX bs=1M status=progress
   * `status=progress` → show progress
 
 ---
+
+# 🔑 Working with Users, Groups & Permissions in Ubuntu
+
+Managing users, groups, and file permissions is central to system administration. Below are **typical exam-style tasks**, with commands and brief descriptions.
+
+---
+
+## 1. Create a new user with a home directory
+
+```bash
+sudo useradd -m andrei
+```
+
+* `-m` → create home directory (`/home/andrei`)
+
+---
+
+## 2. Create a new user with custom home and shell
+
+```bash
+sudo useradd -m -d /srv/andrei -s /bin/bash andrei
+```
+
+* `-m` → create home directory
+* `-d /srv/andrei` → custom home path
+* `-s /bin/bash` → default shell set to bash
+
+---
+
+## 3. Create a user and set the password immediately
+
+```bash
+sudo useradd -m ana
+echo 'ana:MyPass123' | sudo chpasswd
+```
+
+* `chpasswd` → read `username:password` from stdin
+* This sets password during user creation
+
+---
+
+## 4. Create a user and set password interactively
+
+```bash
+sudo passwd ana
+```
+
+* `passwd` → change user password
+* If run without username, it changes **your own password**
+* If run with username, it changes **that user’s password** (requires `sudo`)
+
+---
+
+## 5. Force user to change password at first login
+
+```bash
+sudo passwd -e ana
+```
+
+* `-e` (expire) → password will expire immediately
+* User must set a new password at next login
+
+---
+
+## 6. Lock or unlock a user’s password
+
+```bash
+sudo passwd -l ana   # lock
+sudo passwd -u ana   # unlock
+```
+
+* `-l` → lock account (disable password login)
+* `-u` → unlock account
+
+---
+
+## 7. Set password validity rules
+
+```bash
+sudo chage -M 30 ana
+```
+
+* `chage` → manage password aging
+* `-M 30` → maximum password age = 30 days
+
+---
+
+## 8. Add a user to an existing group
+
+```bash
+sudo usermod -aG umb ana
+```
+
+* `-aG umb` → append (`-a`) user to group(s) (`-G`)
+
+---
+
+## 9. Add multiple users to the same group
+
+```bash
+sudo usermod -aG umb ana
+sudo usermod -aG umb ion
+```
+
+👉 Typical exam case: add two or more users to the same group
+
+---
+
+## 10. Delete a user
+
+```bash
+sudo userdel -r ana
+```
+
+* `userdel` → remove a user
+* `-r` → remove user’s home directory and mail spool
+
+---
+
+## 11. Change ownership of a file
+
+```bash
+sudo chown ana file.txt
+```
+
+* Sets `ana` as owner of `file.txt`
+
+**Change both owner and group:**
+
+```bash
+sudo chown ana:umb file.txt
+```
+
+* Sets owner = `ana`, group = `umb`
+
+---
+
+## 12. Change only group of a file
+
+```bash
+sudo chgrp umb file.txt
+```
+
+* Changes group ownership only
+
+---
+
+## 13. Change permissions numerically
+
+```bash
+chmod 640 file.txt
+```
+
+* `640` = owner=read/write (6), group=read (4), others=none (0)
+
+---
+
+## 14. Change permissions symbolically
+
+```bash
+chmod u+x,g-w,o-r file.txt
+```
+
+* `u+x` → add execute to owner
+* `g-w` → remove write from group
+* `o-r` → remove read from others
+
+---
+
+## 15. Recursive ownership change
+
+```bash
+sudo chown -R ana:umb /project
+```
+
+* `-R` → apply to all subfiles/subdirs in `/project`
+
+---
+
+## 16. Check permissions and groups
+
+```bash
+ls -l file.txt
+groups ana
+id ana
+```
+
+* `ls -l` → shows owner, group, and permissions of files
+* `groups` → lists groups a user belongs to
+* `id` → shows UID, GID, and groups
+
+---
+
+👉 **In summary for passwords:**
+
+* `passwd user` → set/change password interactively
+* `echo 'user:pass' | chpasswd` → set password in scripts/one-liners
+* `passwd -e user` → force password reset at next login
+* `passwd -l user` / `-u user` → lock/unlock password login
+* `chage -M days user` → enforce password expiration policy
+
+---
